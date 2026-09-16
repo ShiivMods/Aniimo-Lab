@@ -1,0 +1,12 @@
+Correspondance des icônes d'éléments (Aniimo France)
+ice.png       -> https://aniimofrance.com/img/specs/glace.webp
+water.png     -> https://aniimofrance.com/img/specs/eau.webp
+lightning.png -> https://aniimofrance.com/img/specs/foudre.webp
+fire.png      -> https://aniimofrance.com/img/specs/feu.webp
+plant.png     -> https://aniimofrance.com/img/specs/plante.webp
+rock.png      -> https://aniimofrance.com/img/specs/roche.webp
+wind.png      -> https://aniimofrance.com/img/specs/vent.webp
+dark.png      -> https://aniimofrance.com/img/specs/tenebres.webp
+light.png     -> https://aniimofrance.com/img/specs/lumiere.webp
+
+Les fichiers sont servis localement par Aniimo Matchup Lab pour éviter toute dépendance d'affichage à un site tiers.
