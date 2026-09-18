@@ -1,1 +1,95 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aniimo Matchup Lab</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="weakness"><div class="app"><aside id="sidebar"></aside><main class="main"><section class="page"><div class="hero"><div><div class="eyebrow" data-i18n="weakEyebrow"></div><h1 data-i18n="weakTitle"></h1><p data-i18n="weakSubtitle"></p></div><div class="badge" data-aniimo-count></div></div><div class="panel form"><div class="section"><div class="sectionhead"><div class="sectiontitle" data-i18n="targetAniimo"></div><div class="small" data-i18n="optionalSearch"></div></div><div class="searchrow"><div class="searchbox"><span class="searchicon">⌕</span><input id="w-search" autocomplete="off" data-i18n-placeholder="searchAniimo"></div><button id="w-clear" class="clearbtn" data-i18n="clear"></button></div><div id="w-hit" class="aniimo-hit"></div></div><div class="section"><div class="sectionhead"><div class="sectiontitle" data-i18n="elementsMax"></div></div><div id="w-elements" class="picker"></div></div><div class="section"><div class="sectionhead"><div class="sectiontitle" data-i18n="spatialProfile"></div></div><div id="w-spatials" class="spatial"></div></div><div class="divider"></div><div id="w-summary" class="summary"></div></div><div class="panel results"><div class="resulthead"><h2 data-i18n="results"></h2><div id="w-context" class="context"></div></div><div class="grid3"><div class="card good"><div class="card-title"><span class="dot good"></span><h3 data-i18n="bestCounters"></h3><span id="w-best-count" class="count">0</span></div><p class="desc" data-i18n="bestCountersDesc"></p><div id="w-best" class="list"></div></div><div class="card purple"><div class="card-title"><h3 data-i18n="aniimoCandidates"></h3><span id="w-candidates-count" class="count">0</span></div><p class="desc" data-i18n="aniimoCandidatesDesc"></p><div id="w-candidates" class="list"></div></div><div class="card bad"><div class="card-title"><span class="dot bad"></span><h3 data-i18n="avoid"></h3><span id="w-avoid-count" class="count">0</span></div><p class="desc" data-i18n="avoidDesc"></p><div id="w-avoid" class="list"></div></div></div></div></section></main></div><script src="assets/data.js"></script><script src="assets/i18n.js"></script><script src="assets/common.js"></script><script src="assets/matchups.js"></script><script src="assets/weakness.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Aniimo Matchup Lab</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body data-page="weakness">
+    <div class="app">
+      <aside id="sidebar"></aside>
+      <main class="main">
+        <section class="page">
+          <div class="hero">
+            <div>
+              <div class="eyebrow" data-i18n="weakEyebrow"></div>
+              <h1 data-i18n="weakTitle"></h1>
+              <p data-i18n="weakSubtitle"></p>
+            </div>
+            <div class="badge" data-aniimo-count></div>
+          </div>
+          <div class="panel form">
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="targetAniimo"></div>
+                <div class="small" data-i18n="optionalSearch"></div>
+              </div>
+              <div class="searchrow">
+                <div class="searchbox">
+                  <span class="searchicon">⌕</span>
+                  <input id="w-search" autocomplete="off" data-i18n-placeholder="searchAniimo">
+                </div>
+                <button id="w-clear" class="clearbtn" data-i18n="clear"></button>
+              </div>
+              <div id="w-hit" class="aniimo-hit"></div>
+            </div>
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="elementsMax"></div>
+              </div>
+              <div id="w-elements" class="picker"></div>
+            </div>
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="spatialProfile"></div>
+              </div>
+              <div id="w-spatials" class="spatial"></div>
+            </div>
+            <div class="divider"></div>
+            <div id="w-summary" class="summary"></div>
+          </div>
+          <div class="panel results">
+            <div class="resulthead">
+              <h2 data-i18n="results"></h2>
+              <div id="w-context" class="context"></div>
+            </div>
+            <div class="grid3">
+              <div class="card good">
+                <div class="card-title">
+                  <span class="dot good"></span>
+                  <h3 data-i18n="bestCounters"></h3>
+                  <span id="w-best-count" class="count">0</span>
+                </div>
+                <p class="desc" data-i18n="bestCountersDesc"></p>
+                <div id="w-best" class="list"></div>
+              </div>
+              <div class="card purple">
+                <div class="card-title">
+                  <h3 data-i18n="aniimoCandidates"></h3>
+                  <span id="w-candidates-count" class="count">0</span>
+                </div>
+                <p class="desc" data-i18n="aniimoCandidatesDesc"></p>
+                <div id="w-candidates" class="list"></div>
+              </div>
+              <div class="card bad">
+                <div class="card-title">
+                  <span class="dot bad"></span>
+                  <h3 data-i18n="avoid"></h3>
+                  <span id="w-avoid-count" class="count">0</span>
+                </div>
+                <p class="desc" data-i18n="avoidDesc"></p>
+                <div id="w-avoid" class="list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="assets/data.js"></script>
+    <script src="assets/i18n.js"></script>
+    <script src="assets/common.js"></script>
+    <script src="assets/matchups.js"></script>
+    <script src="assets/weakness.js"></script>
+  </body>
+</html>

@@ -1,1 +1,71 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aniimo Matchup Lab</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="collection"><div class="app"><aside id="sidebar"></aside><main class="main"><section class="page"><div class="hero"><div><div class="eyebrow" data-i18n="collectionEyebrow"></div><h1 data-i18n="collectionTitle"></h1><p data-i18n="collectionSubtitle"></p></div><div class="badge" id="collection-badge"></div></div><div class="reference-grid"><div class="reference-box"><h2 data-i18n="referenceTitle"></h2><p data-i18n="referenceText"></p><div class="code-row"><input id="reference-code" class="code-value" readonly aria-label="Reference code"><button id="copy-code" class="actionbtn primary" data-i18n="copyCode"></button></div><div id="copy-status" class="status"></div><div class="privacy-note"><span data-i18n="referenceInfo"></span><br><span data-i18n="collectionPrivacy"></span></div></div><div class="reference-box"><h2 data-i18n="restoreTitle"></h2><p data-i18n="restoreText"></p><div class="code-row"><input id="restore-code" class="restore-input" data-i18n-placeholder="restorePlaceholder" autocomplete="off"><button id="restore-button" class="actionbtn" data-i18n="restoreButton"></button></div><div id="restore-status" class="status"></div></div></div><div class="panel form"><div class="collection-head"><div id="collection-count" class="collection-count"></div><button id="collection-clear" class="actionbtn danger" data-i18n="clearCollection"></button></div><div class="collection-toolbar"><div class="searchbox"><span class="searchicon">⌕</span><input id="collection-search" data-i18n-placeholder="searchCollection"></div><select id="collection-element" class="select"></select><select id="collection-role" class="select"></select><button id="collection-reset" class="actionbtn" data-i18n="resetFilters"></button></div><div id="collection-grid" class="collection-grid"></div></div></section></main></div><script src="assets/data.js"></script><script src="assets/i18n.js"></script><script src="assets/common.js"></script><script src="assets/collection.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Aniimo Matchup Lab</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body data-page="collection">
+    <div class="app">
+      <aside id="sidebar"></aside>
+      <main class="main">
+        <section class="page">
+          <div class="hero">
+            <div>
+              <div class="eyebrow" data-i18n="collectionEyebrow"></div>
+              <h1 data-i18n="collectionTitle"></h1>
+              <p data-i18n="collectionSubtitle"></p>
+            </div>
+            <div class="badge" id="collection-badge"></div>
+          </div>
+          <div class="reference-grid">
+            <div class="reference-box">
+              <h2 data-i18n="referenceTitle"></h2>
+              <p data-i18n="referenceText"></p>
+              <div class="code-row">
+                <input id="reference-code" class="code-value" readonly="" aria-label="Reference code">
+                <button id="copy-code" class="actionbtn primary" data-i18n="copyCode"></button>
+              </div>
+              <div id="copy-status" class="status"></div>
+              <div class="privacy-note">
+                <span data-i18n="referenceInfo"></span>
+                <br>
+                <span data-i18n="collectionPrivacy"></span>
+              </div>
+            </div>
+            <div class="reference-box">
+              <h2 data-i18n="restoreTitle"></h2>
+              <p data-i18n="restoreText"></p>
+              <div class="code-row">
+                <input id="restore-code" class="restore-input" data-i18n-placeholder="restorePlaceholder" autocomplete="off">
+                <button id="restore-button" class="actionbtn" data-i18n="restoreButton"></button>
+              </div>
+              <div id="restore-status" class="status"></div>
+            </div>
+          </div>
+          <div class="panel form">
+            <div class="collection-head">
+              <div id="collection-count" class="collection-count"></div>
+              <button id="collection-clear" class="actionbtn danger" data-i18n="clearCollection"></button>
+            </div>
+            <div class="collection-toolbar">
+              <div class="searchbox">
+                <span class="searchicon">⌕</span>
+                <input id="collection-search" data-i18n-placeholder="searchCollection">
+              </div>
+              <select id="collection-element" class="select"></select>
+              <select id="collection-role" class="select"></select>
+              <button id="collection-reset" class="actionbtn" data-i18n="resetFilters"></button>
+            </div>
+            <div id="collection-grid" class="collection-grid"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="assets/data.js"></script>
+    <script src="assets/i18n.js"></script>
+    <script src="assets/common.js"></script>
+    <script src="assets/collection.js"></script>
+  </body>
+</html>
