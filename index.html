@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -40,12 +40,29 @@
               </div>
               <div id="w-elements" class="picker"></div>
             </div>
+
             <div class="section">
+              <div class="switchrow">
+                <div>
+                  <strong data-i18n="showSpatial"></strong>
+                  <div class="small" data-i18n="showSpatialHint"></div>
+                </div>
+
+                <label class="switch">
+                  <input id="w-use-spatial" type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div id="w-spatial-section" class="section" hidden>
               <div class="sectionhead">
                 <div class="sectiontitle" data-i18n="spatialProfile"></div>
               </div>
+
               <div id="w-spatials" class="spatial"></div>
             </div>
+
             <div class="divider"></div>
             <div id="w-summary" class="summary"></div>
           </div>

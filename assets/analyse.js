@@ -1,117 +1,590 @@
 /* Page logic: analyze one Aniimo profile. */
 (function() {
   'use strict';
-  const A = window.AML, D = A.data, M = window.AML_MATCH;
+
+  const A = window.AML;
+  const D = A.data;
+  const M = window.AML_MATCH;
+
   const state = {
-    es: ['fire'], s: 'strike', aniimo: null
+    es: ['fire'],
+    s: 'strike',
+    useSpatial: false,
+    aniimo: null
   };
-  const empty = x => `<div class="empty">${x}</div>`;
 
-  function globalRow(es, s, label, kind = 'warn', meta = '') {
-    return `<div class="row"><div class="row-left">${A.iconGroup(es)}<div><div class="row-name">${es.map(A.elementName).join(' + ')} · ${D.spatials[s].icon} ${A.spatialName(s)}</div>${meta?`<div class="row-meta">${meta}</div>`:''}</div></div><span class="tag ${kind}">${label}</span></div>`
+  const empty = text => `<div class="empty">${text}</div>`;
+
+  function globalRow(elements, spatial, label, kind = 'warn', meta = '') {
+    return `
+      <div class="row">
+        <div class="row-left">
+          ${A.iconGroup(elements)}
+
+          <div>
+            <div class="row-name">
+              ${elements.map(A.elementName).join(' + ')} ·
+              ${D.spatials[spatial].icon}
+              ${A.spatialName(spatial)}
+            </div>
+
+            ${meta ? `<div class="row-meta">${meta}</div>` : ''}
+          </div>
+        </div>
+
+        <span class="tag ${kind}">
+          ${label}
+        </span>
+      </div>
+    `;
   }
 
-  function buildPicker() {
+  function elementRow(element, label, kind = 'warn', meta = '') {
+    return `
+      <div class="row">
+        <div class="row-left">
+          ${A.iconGroup([element])}
+
+          <div>
+            <div class="row-name">
+              ${A.elementName(element)}
+            </div>
+
+            ${meta ? `<div class="row-meta">${meta}</div>` : ''}
+          </div>
+        </div>
+
+        <span class="tag ${kind}">
+          ${label}
+        </span>
+      </div>
+    `;
+  }
+
+  function buildElementPicker() {
     const root = document.getElementById('a-elements');
-    root.innerHTML = D.elementOrder.map(k => `<button class="epick ${state.es.includes(k)?'active':''}" data-k="${k}">${A.iconSvg(k,'lg')}<span class="label">${A.elementName(k)}</span></button>`).join('');
-    root.querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
-      const k = b.dataset.k;
-      let es = [...state.es];
-      if (es.includes(k)) {
-        if (es.length > 1) es = es.filter(x => x !== k)
-      } else if (es.length < 2) es.push(k);
-      else es = [es[1], k];
-      state.es = es;
-      state.aniimo = null;
-      document.getElementById('a-search').value = '';
-      render()
-    })
+
+    root.innerHTML = D.elementOrder.map(element => `
+      <button
+        class="epick ${state.es.includes(element) ? 'active' : ''}"
+        data-k="${element}"
+      >
+        ${A.iconSvg(element, 'lg')}
+
+        <span class="label">
+          ${A.elementName(element)}
+        </span>
+      </button>
+    `).join('');
+
+    root.querySelectorAll('[data-k]').forEach(button => {
+      button.onclick = () => {
+        const element = button.dataset.k;
+        let elements = [...state.es];
+
+        if (elements.includes(element)) {
+          if (elements.length > 1) {
+            elements = elements.filter(item => item !== element);
+          }
+        } else if (elements.length < 2) {
+          elements.push(element);
+        } else {
+          elements = [
+            elements[1],
+            element
+          ];
+        }
+
+        state.es = elements;
+        state.aniimo = null;
+
+        document.getElementById('a-search').value = '';
+
+        render();
+      };
+    });
   }
 
-  function buildSpatial() {
+  function buildSpatialPicker() {
     const root = document.getElementById('a-spatials');
-    root.innerHTML = D.spatialOrder.map(k => {
-      const x = D.spatials[k];
-      return `<button class="spick ${state.s===k?'active':''}" data-k="${k}"><span class="spatial-icon">${x.icon}</span><span><strong>${A.spatialName(k)}</strong><small>${A.lang==='fr'?x.frHint:x.enHint}</small></span></button>`
+
+    root.innerHTML = D.spatialOrder.map(spatialKey => {
+      const spatial = D.spatials[spatialKey];
+
+      return `
+        <button
+          class="spick ${state.s === spatialKey ? 'active' : ''}"
+          data-k="${spatialKey}"
+        >
+          <span class="spatial-icon">
+            ${spatial.icon}
+          </span>
+
+          <span>
+            <strong>
+              ${A.spatialName(spatialKey)}
+            </strong>
+
+            <small>
+              ${A.lang === 'fr'
+                ? spatial.frHint
+                : spatial.enHint}
+            </small>
+          </span>
+        </button>
+      `;
     }).join('');
-    root.querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
-      state.s = b.dataset.k;
-      render()
-    })
+
+    root.querySelectorAll('[data-k]').forEach(button => {
+      button.onclick = () => {
+        state.s = button.dataset.k;
+
+        render();
+      };
+    });
   }
 
-  function hit() {
-    const el = document.getElementById('a-hit');
+  function renderAniimoHit() {
+    const hit = document.getElementById('a-hit');
+
     if (!state.aniimo) {
-      el.classList.remove('show');
-      el.innerHTML = '';
-      return
+      hit.classList.remove('show');
+      hit.innerHTML = '';
+
+      return;
     }
-    el.classList.add('show');
-    el.innerHTML = `<div><div class="aniimo-id">#${A.esc(A.idOf(state.aniimo))} · ${A.esc(state.aniimo.role)}</div><div class="aniimo-name">${A.esc(A.nameOf(state.aniimo))}</div></div><div class="element-pills">${A.pills(state.aniimo.elements)}</div>`
+
+    hit.classList.add('show');
+
+    hit.innerHTML = `
+      <div>
+        <div class="aniimo-id">
+          #${A.esc(A.idOf(state.aniimo))} ·
+          ${A.esc(state.aniimo.role)}
+        </div>
+
+        <div class="aniimo-name">
+          ${A.esc(A.nameOf(state.aniimo))}
+        </div>
+      </div>
+
+      <div class="element-pills">
+        ${A.pills(state.aniimo.elements)}
+      </div>
+    `;
+  }
+
+  function renderPerfectMatchups() {
+    const targets = [];
+
+    for (const element of D.elementOrder) {
+      for (const spatial of D.spatialOrder) {
+        const elementScore = Math.max(
+          ...state.es.map(
+            attacker => M.eMult(
+              attacker,
+              element
+            )
+          )
+        );
+
+        const spatialScore = M.sMult(
+          state.s,
+          spatial
+        );
+
+        targets.push({
+          element,
+          spatial,
+          elementScore,
+          spatialScore
+        });
+      }
+    }
+
+    const perfect = targets.filter(item => {
+      return (
+        item.elementScore > 1.001 &&
+        item.spatialScore === 2
+      );
+    });
+
+    document.getElementById('a-perfect-count').textContent =
+      perfect.length;
+
+    document.getElementById('a-perfect').innerHTML =
+      perfect.length
+        ? perfect.map(item => globalRow(
+            [item.element],
+            item.spatial,
+            A.t('perfect'),
+            'good'
+          )).join('')
+        : empty(A.t('noPerfect'));
+  }
+
+  function renderEffectiveElements() {
+    const effective = D.elementOrder
+      .map(element => ({
+        element,
+        score: Math.max(
+          ...state.es.map(
+            attacker => M.eMult(
+              attacker,
+              element
+            )
+          )
+        )
+      }))
+      .filter(item => item.score > 1.001)
+      .sort(
+        (a, b) =>
+          b.score - a.score
+      );
+
+    document.getElementById('a-effective-count').textContent =
+      effective.length;
+
+    document.getElementById('a-effective').innerHTML =
+      effective.length
+        ? effective.map(item => `
+            <div class="row">
+              <div class="row-left">
+                ${A.iconGroup([item.element])}
+
+                <div>
+                  <div class="row-name">
+                    ${A.elementName(item.element)}
+                  </div>
+
+                  <div class="row-meta">
+                    ${A.t('advantageOff')}
+                  </div>
+                </div>
+              </div>
+
+              <span class="tag good">
+                ${A.t('superEffective')}
+              </span>
+            </div>
+          `).join('')
+        : empty(A.t('noElementAdv'));
+  }
+
+  function getElementDanger(element) {
+    const incoming = M.incomingThreatScore(
+      state.es,
+      element
+    );
+
+    const ownOffense = Math.max(
+      ...state.es.map(
+        attacker => M.eMult(
+          attacker,
+          element
+        )
+      )
+    );
+
+    let danger = 0;
+
+    if (incoming > 1.001) {
+      danger += 2;
+    }
+
+    if (incoming > 2.3) {
+      danger += 2;
+    }
+
+    if (ownOffense < 0.999) {
+      danger += 1;
+    }
+
+    return {
+      element,
+      incoming,
+      ownOffense,
+      danger
+    };
+  }
+
+  function renderElementOnlyDangers() {
+    const dangers = D.elementOrder
+      .map(getElementDanger)
+      .filter(item => item.danger >= 2)
+      .sort((a, b) => {
+        return (
+          b.danger - a.danger ||
+          b.incoming - a.incoming
+        );
+      });
+
+    document.getElementById('a-danger-count').textContent =
+      dangers.length;
+
+    document.getElementById('a-danger').innerHTML =
+      dangers.length
+        ? dangers.map(item => elementRow(
+            item.element,
+            item.danger >= 4
+              ? A.t('dangerMax')
+              : A.t('toAvoid'),
+            'bad',
+            `${M.scoreLabel(item.incoming)} ${A.t('received')}`
+          )).join('')
+        : empty(A.t('noDanger'));
+
+    return dangers;
+  }
+
+  function renderSpatialDangers() {
+    const dangers = [];
+
+    for (const element of D.elementOrder) {
+      const elemental =
+        getElementDanger(element);
+
+      for (const spatial of D.spatialOrder) {
+        const spatialScore = M.sMult(
+          spatial,
+          state.s
+        );
+
+        let danger =
+          elemental.danger;
+
+        if (spatialScore === 2) {
+          danger += 1;
+        }
+
+        if (danger >= 3) {
+          dangers.push({
+            ...elemental,
+            spatial,
+            spatialScore,
+            danger
+          });
+        }
+      }
+    }
+
+    dangers.sort((a, b) => {
+      return (
+        b.danger - a.danger ||
+        b.incoming - a.incoming
+      );
+    });
+
+    document.getElementById('a-danger-count').textContent =
+      dangers.length;
+
+    document.getElementById('a-danger').innerHTML =
+      dangers.length
+        ? dangers
+            .slice(0, 14)
+            .map(item => globalRow(
+              [item.element],
+              item.spatial,
+              item.danger >= 5
+                ? A.t('dangerMax')
+                : A.t('toAvoid'),
+              'bad',
+              `${M.scoreLabel(item.incoming)} ${A.t('received')}${
+                item.spatialScore === 2
+                  ? ` + ${A.t('spatialEnemy')}`
+                  : ''
+              }`
+            ))
+            .join('')
+        : empty(A.t('noDanger'));
+
+    return dangers;
+  }
+
+  function renderIdealPartner(dangers) {
+    const threats = [
+      ...new Set(
+        dangers.map(
+          item => item.element
+        )
+      )
+    ];
+
+    const partners = D.elementOrder
+      .filter(
+        element =>
+          !state.es.includes(element)
+      )
+      .map(element => ({
+        element,
+
+        coverage: threats.reduce(
+          (count, threat) =>
+            count +
+            (
+              M.eMult(
+                element,
+                threat
+              ) > 1.001
+                ? 1
+                : 0
+            ),
+          0
+        ),
+
+        safety: threats.reduce(
+          (count, threat) =>
+            count +
+            (
+              M.eMult(
+                threat,
+                element
+              ) < 0.999
+                ? 1
+                : 0
+            ),
+          0
+        )
+      }))
+      .sort(
+        (a, b) =>
+          b.coverage - a.coverage ||
+          b.safety - a.safety
+      );
+
+    document.getElementById('a-duo').innerHTML =
+      partners.length
+        ? `
+            <div class="duohero">
+              <div class="element-pills">
+                ${A.pills([partners[0].element])}
+              </div>
+
+              <strong>
+                ${A.elementName(partners[0].element)}
+              </strong>
+
+              <p>
+                ${A.t(
+                  'covers',
+                  partners[0].coverage
+                )}
+              </p>
+            </div>
+          `
+        : empty(A.t('notEnough'));
   }
 
   function render() {
-    buildPicker();
-    buildSpatial();
-    hit();
-    document.getElementById('a-summary').innerHTML = `<div class="summary-left"><strong>${state.aniimo?A.esc(A.nameOf(state.aniimo)):A.t('manual')}</strong>${A.pills(state.es)}</div><div class="summary-spatial">${D.spatials[state.s].icon} ${A.spatialName(state.s)}</div>`;
-    document.getElementById('a-context').textContent = `${state.es.map(A.elementName).join(' + ')} · ${A.spatialName(state.s)}`;
-    const targets = [];
-    for (const e of D.elementOrder) for (const s of D.spatialOrder) {
-      const em = Math.max(...state.es.map(a => M.eMult(a, e))), sm = M.sMult(state.s, s);
-      targets.push({
-        e, s, em, sm, total: em * sm
-      })
+    buildElementPicker();
+    buildSpatialPicker();
+    renderAniimoHit();
+
+    document.getElementById('a-use-spatial').checked =
+      state.useSpatial;
+
+    document.getElementById('a-spatial-section').hidden =
+      !state.useSpatial;
+
+    document.getElementById('a-perfect-card').hidden =
+      !state.useSpatial;
+
+    const spatialSummary = state.useSpatial
+      ? `
+          <div class="summary-spatial">
+            ${D.spatials[state.s].icon}
+            ${A.spatialName(state.s)}
+          </div>
+        `
+      : '';
+
+    document.getElementById('a-summary').innerHTML = `
+      <div class="summary-left">
+        <strong>
+          ${state.aniimo
+            ? A.esc(A.nameOf(state.aniimo))
+            : A.t('manual')}
+        </strong>
+
+        ${A.pills(state.es)}
+      </div>
+
+      ${spatialSummary}
+    `;
+
+    document.getElementById('a-context').textContent =
+      state.es.map(A.elementName).join(' + ') +
+      (
+        state.useSpatial
+          ? ` · ${A.spatialName(state.s)}`
+          : ''
+      );
+
+    if (state.useSpatial) {
+      renderPerfectMatchups();
+    } else {
+      document.getElementById('a-perfect-count').textContent =
+        '0';
+
+      document.getElementById('a-perfect').innerHTML =
+        '';
     }
-    const perfect = targets.filter(x => x.em > 1.001 && x.sm === 2);
-    document.getElementById('a-perfect-count').textContent = perfect.length;
-    document.getElementById('a-perfect').innerHTML = perfect.length ? perfect.map(x => globalRow([x.e], x.s, A.t('perfect'), 'good')).join(''): empty(A.t('noPerfect'));
-    const eff = D.elementOrder.map(e => ({
-      e, score: Math.max(...state.es.map(a => M.eMult(a, e)))
-    })).filter(x => x.score > 1.001).sort((a, b) => b.score - a.score);
-    document.getElementById('a-effective-count').textContent = eff.length;
-    document.getElementById('a-effective').innerHTML = eff.length ? eff.map(x => `<div class="row"><div class="row-left">${A.iconGroup([x.e])}<div><div class="row-name">${A.elementName(x.e)}</div><div class="row-meta">${A.t('advantageOff')}</div></div></div><span class="tag good">${A.t('superEffective')}</span></div>`).join(''): empty(A.t('noElementAdv'));
-    const dangers = [];
-    for (const e of D.elementOrder) for (const s of D.spatialOrder) {
-      const incoming = M.incomingThreatScore(state.es, e), sp = M.sMult(s, state.s), myOff = Math.max(...state.es.map(a => M.eMult(a, e)));
-      let danger = 0;
-      if (incoming > 1.001) danger += 2;
-      if (incoming > 2.3) danger += 2;
-      if (sp === 2) danger++;
-      if (myOff < .999) danger++;
-      if (danger >= 3) dangers.push({
-        e, s, incoming, sp, myOff, danger
-      })
-    }
-    dangers.sort((a, b) => b.danger - a.danger || b.incoming - a.incoming);
-    document.getElementById('a-danger-count').textContent = dangers.length;
-    document.getElementById('a-danger').innerHTML = dangers.length ? dangers.slice(0, 14).map(x => globalRow([x.e], x.s, x.danger >= 5 ? A.t('dangerMax'): A.t('toAvoid'), 'bad', `${M.scoreLabel(x.incoming)} ${A.t('received')}${x.sp===2?' + '+A.t('spatialEnemy'):''}`)).join(''): empty(A.t('noDanger'));
-    const threats = [...new Set(dangers.map(x => x.e))], duo = D.elementOrder.filter(e => !state.es.includes(e)).map(e => ({
-      e, coverage: threats.reduce((n, tg) => n + (M.eMult(e, tg) > 1.001 ? 1: 0), 0), safe: threats.reduce((n, tg) => n + (M.eMult(tg, e) < .999 ? 1: 0), 0)
-    })).sort((a, b) => b.coverage - a.coverage || b.safe - a.safe);
-    document.getElementById('a-duo').innerHTML = duo.length ? `<div class="duohero"><div class="element-pills">${A.pills([duo[0].e])}</div><strong>${A.elementName(duo[0].e)}</strong><p>${A.t('covers',duo[0].coverage)}</p></div>`: empty(A.t('notEnough'))
+
+    renderEffectiveElements();
+
+    const dangers = state.useSpatial
+      ? renderSpatialDangers()
+      : renderElementOnlyDangers();
+
+    renderIdealPartner(dangers);
   }
-  const input = document.getElementById('a-search');
-  A.autocomplete(input, a => {
-    state.aniimo = a;
-    state.es = [...a.elements];
-    render()
-  }, {
-    openEmpty: false
-  });
-  input.addEventListener('change', () => {
-    const a = A.exactAniimo(input.value);
-    if (a) {
-      state.aniimo = a;
-      state.es = [...a.elements];
-      render()
+
+  const input =
+    document.getElementById('a-search');
+
+  A.autocomplete(
+    input,
+    aniimo => {
+      state.aniimo = aniimo;
+      state.es = [...aniimo.elements];
+
+      render();
+    },
+    {
+      openEmpty: false
     }
-  });
-  document.getElementById('a-clear').onclick = () => {
-    input.value = '';
-    state.aniimo = null;
-    render()
-  };
+  );
+
+  input.addEventListener(
+    'change',
+    () => {
+      const aniimo =
+        A.exactAniimo(input.value);
+
+      if (aniimo) {
+        state.aniimo = aniimo;
+        state.es = [...aniimo.elements];
+
+        render();
+      }
+    }
+  );
+
+  document.getElementById('a-clear').onclick =
+    () => {
+      input.value = '';
+      state.aniimo = null;
+
+      render();
+    };
+
+  document.getElementById('a-use-spatial').onchange =
+    event => {
+      state.useSpatial =
+        event.target.checked;
+
+      render();
+    };
+
   render();
 })();

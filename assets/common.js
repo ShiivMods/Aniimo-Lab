@@ -16,9 +16,30 @@
     } catch {
     }
   };
-  let lang = new URLSearchParams(location.search).get('lang') || safeGet('aml_lang', 'fr');
-  if (!['fr', 'en'].includes(lang)) lang = 'fr';
-  safeSet('aml_lang', lang);
+  const supportedLanguages = ['fr', 'en'];
+
+  const browserLanguage = (
+    navigator.language || 'en'
+  ).toLowerCase();
+
+  const detectedLanguage = browserLanguage.startsWith('fr')
+    ? 'fr'
+    : 'en';
+
+  const requestedLanguage = new URLSearchParams(
+    location.search
+  ).get('lang');
+
+  const savedLanguage = safeGet(
+    'aml_lang_manual',
+    ''
+  );
+
+  let lang = supportedLanguages.includes(requestedLanguage)
+    ? requestedLanguage
+    : supportedLanguages.includes(savedLanguage)
+      ? savedLanguage
+      : detectedLanguage;
   let owned;
   try {
     owned = new Set(JSON.parse(safeGet('aml_collection', '[]')))
@@ -37,6 +58,39 @@
   const visibleAniimos = D.aniimos.filter(a => sourceOf(a)).sort((a, b) => Number(idOf(a)) - Number(idOf(b)) || nameOf(a).localeCompare(nameOf(b), lang));
   const elementName = key => D.elements[key][lang];
   const spatialName = key => D.spatials[key][lang];
+    const languageFlags = {
+    fr: `
+      <svg
+        class="lang-flag"
+        viewBox="0 0 3 2"
+        aria-hidden="true"
+      >
+        <rect width="1" height="2" x="0" fill="#002395"></rect>
+        <rect width="1" height="2" x="1" fill="#ffffff"></rect>
+        <rect width="1" height="2" x="2" fill="#ed2939"></rect>
+      </svg>
+    `,
+
+    en: `
+      <svg
+        class="lang-flag"
+        viewBox="0 0 60 30"
+        aria-hidden="true"
+      >
+        <clipPath id="gb-clip">
+          <path d="M0 0v30h60V0z"></path>
+        </clipPath>
+
+        <g clip-path="url(#gb-clip)">
+          <path d="M0 0v30h60V0z" fill="#012169"></path>
+          <path d="M0 0 60 30M60 0 0 30" stroke="#ffffff" stroke-width="6"></path>
+          <path d="M0 0 60 30M60 0 0 30" stroke="#c8102e" stroke-width="2"></path>
+          <path d="M30 0v30M0 15h60" stroke="#ffffff" stroke-width="10"></path>
+          <path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"></path>
+        </g>
+      </svg>
+    `
+  };
 
   function esc(value) {
     return String(value).replace(/[&<>'"]/g, c => ({
@@ -57,16 +111,73 @@
     const q = `?lang=${lang}`;
     const items = [['weakness', 'index.html', t('navWeak'), '⌖'], ['analyse', 'analyse.html', t('navAnalyse'), '◈'], ['team', 'team.html', t('navTeam'), '♟'], ['collection', 'collection.html', t('navCollection'), '▦']];
     root.className = 'sidebar';
-    root.innerHTML = `<div class="brand"><div class="brandmark">✦</div><div><strong>Aniimo Matchup Lab</strong><small>${t('brandSub')}</small></div></div><div class="navtitle">${t('tools')}</div><nav class="nav">${items.map(([key,href,label,icon])=>`<a class="${page===key?'active':''}" href="${href}${q}"><span>${icon}</span>${label}</a>`).join('')}</nav><div class="sidebottom"><div class="lang"><button id="lang-fr" class="${lang==='fr'?'active':''}">FR</button><button id="lang-en" class="${lang==='en'?'active':''}">EN</button></div><div class="prototype">${t('prototype')}</div></div>`;
+    root.innerHTML = `
+      <div class="brand">
+        <img
+          class="brand-image"
+          src="assets/img/bouton.png"
+          alt="Aniimo Lab"
+        >
+      </div>
+
+      <div class="navtitle">
+        ${t('tools')}
+      </div>
+
+      <nav class="nav">
+        ${items.map(([key, href, label, icon]) => `
+          <a
+            class="${page === key ? 'active' : ''}"
+            href="${href}${q}"
+          >
+            <span>${icon}</span>
+            ${label}
+          </a>
+        `).join('')}
+      </nav>
+
+      <div class="sidebottom">
+        <div
+          class="lang"
+          aria-label="${lang === 'fr' ? 'Langue' : 'Language'}"
+        >
+          <button
+            id="lang-fr"
+            class="${lang === 'fr' ? 'active' : ''}"
+            type="button"
+            title="Français"
+            aria-label="Français"
+          >
+            ${languageFlags.fr}
+          </button>
+
+          <button
+            id="lang-en"
+            class="${lang === 'en' ? 'active' : ''}"
+            type="button"
+            title="English"
+            aria-label="English"
+          >
+            ${languageFlags.en}
+          </button>
+        </div>
+
+        <div class="prototype">
+          ${t('prototype')}
+        </div>
+      </div>
+    `;    
     document.getElementById('lang-fr').onclick = () => switchLang('fr');
     document.getElementById('lang-en').onclick = () => switchLang('en')
   }
 
   function switchLang(next) {
-    safeSet('aml_lang', next);
+    safeSet('aml_lang_manual', next);
+
     const url = new URL(location.href);
+
     url.searchParams.set('lang', next);
-    location.href = url.href
+    location.href = url.href;
   }
 
   function applyStaticText() {

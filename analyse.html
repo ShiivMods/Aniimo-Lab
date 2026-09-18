@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -40,12 +40,29 @@
               </div>
               <div id="a-elements" class="picker"></div>
             </div>
+
             <div class="section">
+              <div class="switchrow">
+                <div>
+                  <strong data-i18n="showSpatial"></strong>
+                  <div class="small" data-i18n="showSpatialHint"></div>
+                </div>
+
+                <label class="switch">
+                  <input id="a-use-spatial" type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div id="a-spatial-section" class="section" hidden>
               <div class="sectionhead">
                 <div class="sectiontitle" data-i18n="spatialProfile"></div>
               </div>
+
               <div id="a-spatials" class="spatial"></div>
             </div>
+
             <div class="divider"></div>
             <div id="a-summary" class="summary"></div>
           </div>
@@ -55,7 +72,7 @@
               <div id="a-context" class="context"></div>
             </div>
             <div class="grid2">
-              <div class="card good">
+              <div id="a-perfect-card" class="card good">
                 <div class="card-title">
                   <span class="dot good"></span>
                   <h3 data-i18n="perfectAgainst"></h3>
