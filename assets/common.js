@@ -58,7 +58,12 @@
   const visibleAniimos = D.aniimos.filter(a => sourceOf(a)).sort((a, b) => Number(idOf(a)) - Number(idOf(b)) || nameOf(a).localeCompare(nameOf(b), lang));
   const elementName = key => D.elements[key][lang];
   const spatialName = key => D.spatials[key][lang];
-    const languageFlags = {
+  const languageNames = {
+    fr: { fr: 'Français', en: 'French' },
+    en: { fr: 'Anglais', en: 'English' }
+  };
+  const languageName = code => languageNames[code]?.[lang] || code.toUpperCase();
+  const languageFlags = {
     fr: `
       <svg
         class="lang-flag"
@@ -108,8 +113,16 @@
   function renderSidebar() {
     const root = document.getElementById('sidebar');
     if (!root) return;
+
     const q = `?lang=${lang}`;
-    const items = [['weakness', 'index.html', t('navWeak'), '⌖'], ['analyse', 'analyse.html', t('navAnalyse'), '◈'], ['team', 'team.html', t('navTeam'), '♟'], ['collection', 'collection.html', t('navCollection'), '▦']];
+    const analyserOpen = ['analyse', 'team-analysis'].includes(page);
+    const items = [
+      ['weakness', 'index.html', t('navWeak'), '⌖'],
+      ['team', 'team.html', t('navTeam'), '♟'],
+      ['community', 'communaute.html', t('navCommunity'), '♣'],
+      ['collection', 'collection.html', t('navCollection'), '▦']
+    ];
+
     root.className = 'sidebar';
     root.innerHTML = `
       <div class="brand">
@@ -125,7 +138,46 @@
       </div>
 
       <nav class="nav">
-        ${items.map(([key, href, label, icon]) => `
+        <a
+          class="${page === 'weakness' ? 'active' : ''}"
+          href="index.html${q}"
+        >
+          <span>⌖</span>
+          ${t('navWeak')}
+        </a>
+
+        <div class="nav-group ${analyserOpen ? 'open' : ''}">
+          <button
+            id="nav-analyser-toggle"
+            class="nav-group-toggle ${analyserOpen ? 'active' : ''}"
+            type="button"
+            aria-expanded="${analyserOpen ? 'true' : 'false'}"
+          >
+            <span class="nav-group-icon">◈</span>
+            <span class="nav-group-label">${t('navAnalyser')}</span>
+            <span class="nav-chevron">⌄</span>
+          </button>
+
+          <div class="nav-submenu">
+            <a
+              class="${page === 'analyse' ? 'active' : ''}"
+              href="analyse.html${q}"
+            >
+              <span>•</span>
+              ${t('navAnalyseAniimo')}
+            </a>
+
+            <a
+              class="${page === 'team-analysis' ? 'active' : ''}"
+              href="equipe.html${q}"
+            >
+              <span>•</span>
+              ${t('navAnalyseTeam')}
+            </a>
+          </div>
+        </div>
+
+        ${items.slice(1).map(([key, href, label, icon]) => `
           <a
             class="${page === key ? 'active' : ''}"
             href="${href}${q}"
@@ -162,13 +214,41 @@
           </button>
         </div>
 
+        <div class="sidebar-support">
+          <p>
+            ${t('reportPrompt')}
+            <button id="open-report" class="sidebar-inline-action" type="button">${t('reportLink')}</button> !
+          </p>
+          <p>
+            ${t('translationPrompt')}
+            <button id="open-translation-proposal" class="sidebar-inline-action" type="button">${t('translationLink')}</button> !
+          </p>
+          <p class="continuous-translation">
+            ${t('translatorContact')}
+            <strong>@Shiiv14</strong> ${t('viaDiscord')}
+            ${window.AML_COMMUNITY_CONFIG?.contactEmail
+              ? `${t('or')} <a href="mailto:${esc(window.AML_COMMUNITY_CONFIG.contactEmail)}">${t('email')}</a>`
+              : ''}.
+          </p>
+        </div>
+
         <div class="prototype">
           ${t('prototype')}
         </div>
       </div>
-    `;    
+    `;
+
+    const analyserToggle = document.getElementById('nav-analyser-toggle');
+    const analyserGroup = analyserToggle?.closest('.nav-group');
+    if (analyserToggle && analyserGroup) {
+      analyserToggle.onclick = () => {
+        const open = analyserGroup.classList.toggle('open');
+        analyserToggle.setAttribute('aria-expanded', String(open));
+      };
+    }
+
     document.getElementById('lang-fr').onclick = () => switchLang('fr');
-    document.getElementById('lang-en').onclick = () => switchLang('en')
+    document.getElementById('lang-en').onclick = () => switchLang('en');
   }
 
   function switchLang(next) {
@@ -186,9 +266,13 @@
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
     document.querySelectorAll('[data-aniimo-count]').forEach(el => el.textContent = `${visibleAniimos.length} Aniimo`);
     const titleKey = {
-      weakness: 'pageWeakTitle', analyse: 'pageAnalyseTitle', team: 'pageTeamTitle', collection: 'pageCollectionTitle'
-    }
-    [page];
+      weakness: 'pageWeakTitle',
+      analyse: 'pageAnalyseTitle',
+      'team-analysis': 'pageTeamAnalysisTitle',
+      team: 'pageTeamTitle',
+      community: 'pageCommunityTitle',
+      collection: 'pageCollectionTitle'
+    }[page];
     if (titleKey) document.title = t(titleKey)
   }
 
@@ -329,6 +413,6 @@
   renderSidebar();
   applyStaticText();
   window.AML = {
-    data: D, lang, page, t, sourceOf, nameOf, idOf, visibleAniimos, elementName, spatialName, iconSvg, iconGroup, pills, esc, autocomplete, exactAniimo, owned, saveOwned, replaceOwned, referenceCode, decodeReference, safeSet, safeGet
+    data: D, lang, page, t, sourceOf, nameOf, idOf, visibleAniimos, supportedLanguages, languageName, elementName, spatialName, iconSvg, iconGroup, pills, esc, autocomplete, exactAniimo, owned, saveOwned, replaceOwned, referenceCode, decodeReference, safeSet, safeGet, getAniimoByKey: key => D.aniimos.find(a => a.key === key) || null
   };
 })();

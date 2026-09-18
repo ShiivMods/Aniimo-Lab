@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Aniimo Matchup Lab</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body data-page="community">
+    <div class="app">
+      <aside id="sidebar"></aside>
+
+      <main class="main">
+        <section class="page">
+          <div class="hero">
+            <div>
+              <div class="eyebrow" data-i18n="communityEyebrow"></div>
+              <h1 data-i18n="communityTitle"></h1>
+              <p data-i18n="communitySubtitle"></p>
+            </div>
+            <div id="community-mode" class="badge"></div>
+          </div>
+
+          <div class="community-tabs">
+            <button id="community-tab-browse" class="community-tab active" type="button" data-i18n="browseTeams"></button>
+            <button id="community-tab-create" class="community-tab" type="button" data-i18n="createTeam"></button>
+          </div>
+
+          <div id="community-browse-panel" class="panel results">
+            <div class="resulthead community-resulthead">
+              <div>
+                <h2 data-i18n="communityTeams"></h2>
+                <p class="result-subtitle" data-i18n="communityTeamsHint"></p>
+              </div>
+              <div class="community-filter-row">
+                <div class="searchbox">
+                  <span class="searchicon">⌕</span>
+                  <input id="community-search" type="search" autocomplete="off" data-i18n-placeholder="searchCommunityTeams">
+                </div>
+                <select id="community-season" class="select"></select>
+              </div>
+            </div>
+            <div id="community-list" class="community-list"></div>
+          </div>
+
+          <div id="community-create-panel" class="panel form" hidden>
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="teamIdentity"></div>
+              </div>
+
+              <div class="form-grid two-cols">
+                <label class="field-label">
+                  <span data-i18n="seasonName"></span>
+                  <input id="community-create-season" maxlength="60" data-i18n-placeholder="seasonPlaceholder">
+                </label>
+                <label class="field-label">
+                  <span data-i18n="teamName"></span>
+                  <input id="community-create-name" maxlength="80" data-i18n-placeholder="teamNamePlaceholder">
+                </label>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="teamMembers"></div>
+                <div id="community-create-count" class="small">0 / 4</div>
+              </div>
+              <div id="community-create-slots" class="team-slot-grid"></div>
+            </div>
+
+            <div class="section">
+              <label class="field-label">
+                <span data-i18n="teamDescription"></span>
+                <textarea id="community-create-description" rows="6" maxlength="1500" data-i18n-placeholder="teamDescriptionPlaceholder"></textarea>
+              </label>
+            </div>
+
+            <div id="community-create-notice"></div>
+            <button id="community-publish" class="actionbtn primary wide-action" type="button" data-i18n="publishTeam"></button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/i18n.js"></script>
+    <script src="assets/community-config.js"></script>
+    <script src="assets/common.js"></script>
+    <script src="assets/feedback.js"></script>
+    <script src="assets/community.js"></script>
+    <script src="assets/community-page.js"></script>
+  </body>
+</html>

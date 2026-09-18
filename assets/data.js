@@ -1729,7 +1729,7 @@ window.AML_DATA = {
       "color": "#52c5b1"
     },
     "dark": {
-      "fr": "Ténèbres",
+      "fr": "Ombre",
       "en": "Dark",
       "color": "#8245c5"
     },

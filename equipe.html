@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Aniimo Matchup Lab</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body data-page="team-analysis">
+    <div class="app">
+      <aside id="sidebar"></aside>
+
+      <main class="main">
+        <section class="page">
+          <div class="hero">
+            <div>
+              <div class="eyebrow" data-i18n="teamAnalysisEyebrow"></div>
+              <h1 data-i18n="teamAnalysisTitle"></h1>
+              <p data-i18n="teamAnalysisSubtitle"></p>
+            </div>
+            <div class="badge" data-i18n="teamSize"></div>
+          </div>
+
+          <div class="panel form">
+            <div class="section">
+              <div class="sectionhead">
+                <div class="sectiontitle" data-i18n="teamMembers"></div>
+                <div id="team-analysis-count" class="small">0 / 4</div>
+              </div>
+
+              <div class="team-slot-grid" id="team-analysis-slots"></div>
+            </div>
+
+            <div class="section">
+              <div class="switchrow">
+                <strong data-i18n="useRoles"></strong>
+                <label class="switch">
+                  <input id="team-analysis-roles" type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <button id="team-analysis-run" class="actionbtn primary wide-action" type="button" data-i18n="analyseTeam"></button>
+          </div>
+
+          <div id="team-analysis-empty" class="panel results">
+            <div class="notice subtle-notice" data-i18n="teamAnalysisWaiting"></div>
+          </div>
+
+          <div id="team-analysis-results" class="panel results" hidden>
+            <div class="resulthead">
+              <div>
+                <h2 data-i18n="teamAnalysisResults"></h2>
+                <p class="result-subtitle" data-i18n="teamAnalysisResultsHint"></p>
+              </div>
+              <div id="team-analysis-score" class="team-score"></div>
+            </div>
+
+            <div class="analysis-summary-grid">
+              <div class="analysis-metric">
+                <span data-i18n="elementCoverage"></span>
+                <strong id="team-analysis-coverage"></strong>
+              </div>
+              <div class="analysis-metric">
+                <span data-i18n="elementDiversity"></span>
+                <strong id="team-analysis-diversity"></strong>
+              </div>
+              <div class="analysis-metric">
+                <span data-i18n="roleBalance"></span>
+                <strong id="team-analysis-roles-result"></strong>
+              </div>
+              <div class="analysis-metric">
+                <span data-i18n="sharedWeaknesses"></span>
+                <strong id="team-analysis-weakness-count"></strong>
+              </div>
+            </div>
+
+            <div class="grid2 team-analysis-grid">
+              <div class="card good">
+                <div class="card-title">
+                  <span class="dot good"></span>
+                  <h3 data-i18n="teamStrengths"></h3>
+                </div>
+                <div id="team-analysis-strengths" class="analysis-list"></div>
+              </div>
+
+              <div class="card bad">
+                <div class="card-title">
+                  <span class="dot bad"></span>
+                  <h3 data-i18n="teamWeakPoints"></h3>
+                </div>
+                <div id="team-analysis-weaknesses" class="analysis-list"></div>
+              </div>
+            </div>
+
+            <div class="improvement-box">
+              <div class="improvement-head">
+                <div>
+                  <h3 data-i18n="improvementIdeas"></h3>
+                  <p data-i18n="improvementIdeasHint"></p>
+                </div>
+              </div>
+              <div id="team-analysis-improvements"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/i18n.js"></script>
+    <script src="assets/community-config.js"></script>
+    <script src="assets/common.js"></script>
+    <script src="assets/feedback.js"></script>
+    <script src="assets/matchups.js"></script>
+    <script src="assets/team-evaluator.js"></script>
+    <script src="assets/team-analyse.js"></script>
+  </body>
+</html>

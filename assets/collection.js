@@ -63,7 +63,12 @@
     render()
   }
   filters();
-  document.getElementById('collection-search').oninput = render;
+  const collectionSearch = document.getElementById('collection-search');
+  A.autocomplete(collectionSearch, aniimo => {
+    collectionSearch.value = A.nameOf(aniimo);
+    render();
+  }, { openEmpty: false });
+  collectionSearch.addEventListener('input', render);
   document.getElementById('collection-element').onchange = render;
   document.getElementById('collection-role').onchange = render;
   document.getElementById('collection-reset').onclick = () => {

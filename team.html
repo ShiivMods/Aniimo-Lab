@@ -9,6 +9,7 @@
   <body data-page="team">
     <div class="app">
       <aside id="sidebar"></aside>
+
       <main class="main">
         <section class="page">
           <div class="hero">
@@ -19,12 +20,14 @@
             </div>
             <div class="badge" data-i18n="teamSize"></div>
           </div>
+
           <div class="panel form">
             <div class="section">
               <div class="sectionhead">
                 <div class="sectiontitle" data-i18n="favorites"></div>
                 <div id="fav-limit" class="small">0 / 3</div>
               </div>
+
               <div class="searchrow">
                 <div class="searchbox">
                   <span class="searchicon">⌕</span>
@@ -32,12 +35,15 @@
                 </div>
                 <button id="team-add" class="actionbtn primary" data-i18n="add"></button>
               </div>
+
               <div id="favchips" class="favchips"></div>
             </div>
+
             <div class="section">
               <div class="sectionhead">
                 <div class="sectiontitle" data-i18n="teamOptions"></div>
               </div>
+
               <div class="switchrow">
                 <strong data-i18n="ownedOnly"></strong>
                 <label class="switch">
@@ -45,30 +51,52 @@
                   <span class="slider"></span>
                 </label>
               </div>
+
               <div class="switchrow">
                 <strong data-i18n="useRoles"></strong>
                 <label class="switch">
-                  <input id="use-roles" type="checkbox" checked="">
+                  <input id="use-roles" type="checkbox" checked>
                   <span class="slider"></span>
                 </label>
               </div>
             </div>
           </div>
+
           <div class="panel results">
             <div class="resulthead">
-              <h2 data-i18n="suggestedTeams"></h2>
+              <div>
+                <h2 data-i18n="siteProposals"></h2>
+                <p class="result-subtitle" data-i18n="siteProposalsHint"></p>
+              </div>
               <div id="team-context" class="context"></div>
             </div>
             <div id="team-notice"></div>
             <div id="team-results" class="team-results"></div>
           </div>
+
+          <div class="panel results">
+            <div class="resulthead">
+              <div>
+                <h2 data-i18n="communitySeen"></h2>
+                <p class="result-subtitle" data-i18n="communitySeenHint"></p>
+              </div>
+              <a class="text-link" href="communaute.html" data-i18n="seeCommunity"></a>
+            </div>
+            <div id="team-community-notice"></div>
+            <div id="team-community-results" class="community-list compact-community-list"></div>
+          </div>
         </section>
       </main>
     </div>
+
     <script src="assets/data.js"></script>
     <script src="assets/i18n.js"></script>
+    <script src="assets/community-config.js"></script>
     <script src="assets/common.js"></script>
+    <script src="assets/feedback.js"></script>
     <script src="assets/matchups.js"></script>
+    <script src="assets/team-evaluator.js"></script>
+    <script src="assets/community.js"></script>
     <script src="assets/team.js"></script>
   </body>
 </html>

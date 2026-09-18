@@ -1,43 +1,41 @@
-# Aniimo Matchup Lab
+# Aniimo Lab
 
-Petit outil statique FR/EN pour analyser les affinités élémentaires des Aniimo, gérer une collection locale et proposer des compositions d'équipe.
+Static FR/EN web application for Aniimo matchup and team analysis.
 
-## Structure
+## Pages
 
-```text
-Aniimo Lab/
-├── index.html              # Trouver une faiblesse
-├── analyse.html            # Analyser un Aniimo
-├── team.html               # Votre compo idéale
-├── collection.html         # Collection + code de référencement
-├── assets/
-│   ├── data.js             # Base canonique Aniimo et données de matchup
-│   ├── i18n.js             # Textes d'interface FR/EN
-│   ├── common.js           # UI commune, langue, recherche, collection, codes
-│   ├── matchups.js         # Calculs de matchup
-│   ├── weakness.js         # Logique de index.html
-│   ├── analyse.js          # Logique de analyse.html
-│   ├── team.js             # Logique de team.html
-│   ├── collection.js       # Logique de collection.html
-│   ├── styles.css          # Styles partagés
-│   └── icons/elements/     # Icônes locales des neuf éléments
-└── .gitattributes
+- `index.html`: find an Aniimo weakness.
+- `analyse.html`: analyze one Aniimo.
+- `equipe.html`: analyze a four-Aniimo team.
+- `team.html`: generate ideal teams and show matching community teams.
+- `communaute.html`: browse, publish, translate and upvote community teams.
+- `collection.html`: manage the local collection and portable reference code.
+
+## Main scripts
+
+- `assets/data.js`: canonical Aniimo data with source-specific FR/EN IDs and names.
+- `assets/common.js`: shared UI, sidebar, language, autocomplete and collection helpers.
+- `assets/matchups.js`: elemental and optional spatial matchup math.
+- `assets/team-evaluator.js`: shared four-member team evaluation.
+- `assets/community.js`: community storage abstraction, local or Supabase.
+- `assets/community-config.js`: optional Supabase public configuration.
+
+## Community backend
+
+The site works without a server. In that default mode, community data is local to the browser. For a real shared community, follow `COMMUNITY_SETUP.md` and run `SUPABASE_SETUP.sql`.
+
+## Development
+
+The project has no build step. Open the folder in VS Code and use Live Server, or run:
+
+```bash
+python -m http.server 8000
 ```
 
-Le dossier dupliqué `site/`, les métadonnées `.git/` et le `package-lock.json` vide ont été retirés de cette version propre. Ils ne sont pas nécessaires au fonctionnement du site.
+Then open `http://localhost:8000`.
 
-## Modèle des Aniimo
+## Feedback and translation contributions
 
-Un Aniimo n'existe qu'une seule fois dans `assets/data.js`. Chaque fiche possède une clé interne stable et des identités par source/langue sous `sources.fr` et `sources.en`. Les noms et identifiants peuvent donc changer selon la langue sans dupliquer la créature dans la base.
+The sidebar now exposes two contribution flows: data/error reports and translation proposals. Shared submissions require the same Supabase setup as the community module; see `COMMUNITY_SETUP.md` and `SUPABASE_SETUP.sql`.
 
-## Collection et confidentialité
-
-La collection est enregistrée localement dans le navigateur via `localStorage` lorsque celui-ci est disponible. Aucun compte ni cookie n'est requis. Le code `AML1` représente uniquement les Aniimo sélectionnés et ne contient aucune donnée de compte ou information personnelle.
-
-## GitHub Pages
-
-Publier le contenu de ce dossier directement à la racine du dépôt. `index.html` doit rester à la racine et le dossier `assets/` doit conserver son arborescence.
-
-## Références des icônes
-
-Les sources des icônes élémentaires sont indiquées dans `assets/icons/elements/SOURCES.txt`. Les fichiers sont servis localement afin d'éviter une dépendance d'affichage à un site tiers.
+The translation template is available at `assets/downloads/Aniimo_Lab_translation_template.xlsx`.
